@@ -8,6 +8,7 @@
 	<div>
 	<table>
 	<tr th:each="book : ${books}">
+		<td th:text="${book.id}"></td>
 		<td th:text="${book.title}"></td>
 		<td th:text="${book.author}"></td>
 		<td th:text="${book.publicationYear}"></td>
@@ -15,7 +16,8 @@
 		<td><a th:href="@{/delete/{id}(id=${book.id})}">Poista</a></td>	
 		<td><a th:href="@{/edit/{id}(id=${book.id})}">Muokkaa</a></td>
 	</tr>
-	</table>	
+	</table>
 	</div>
+	<a href="/addBook">Lisää uusi kirja</a>	
 </body>
 </html>
