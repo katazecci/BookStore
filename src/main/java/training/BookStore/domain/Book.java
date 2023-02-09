@@ -1,5 +1,8 @@
 package training.BookStore.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -92,6 +95,16 @@ public class Book {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public static List<String> getAllCategories(List<Book> books) {
+		List<String> categories = new ArrayList<>();
+		for (Book book : books) {
+			if (!categories.contains(book.getCategory().getName())) {
+				categories.add(book.getCategory().getName());
+			}
+		}
+		return categories;
 	}
 
 	@Override
