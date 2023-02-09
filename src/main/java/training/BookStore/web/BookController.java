@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import training.BookStore.domain.Book;
 import training.BookStore.domain.BookRepository;
+import training.BookStore.domain.CategoryRepository;
 
 @Controller
 public class BookController {
@@ -22,11 +23,15 @@ public class BookController {
 	@Autowired
 	private BookRepository bookRepository;
 
+	@Autowired
+	private CategoryRepository catRepository;
+
 	@RequestMapping(value = { "/main" })
 	public String showMainPage() {
 		return "index";
 	}
 
+	// Show all books
 	@RequestMapping(value = { "/bookList", "/" })
 	public String showBooklist(Model model) {
 		log.info("get books from db");
@@ -34,23 +39,26 @@ public class BookController {
 		return "bookList";
 	}
 
+	// Add a new book
 	@GetMapping("/addBook")
 	public String newBook(Model model) {
 		model.addAttribute("book", new Book());
+		model.addAttribute("categories", catRepository.findAll());
 		return "newBook";
 	}
 
+	// Save new book
 	@PostMapping("saveBook")
 	public String saveBook(@Validated Book book, BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("some validation error happened");
 			return "/newBook";
 		}
-
 		bookRepository.save(book);
 		return "redirect:/bookList";
 	}
 
+	// Delete a book
 	@GetMapping("delete/{id}")
 	public String deleteBook(@PathVariable("id") Long id, Model model) {
 		bookRepository.deleteById(id);
@@ -60,6 +68,7 @@ public class BookController {
 	@GetMapping("edit/{id}")
 	public String editBook(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("book", bookRepository.findById(id));
+		model.addAttribute("departments", catRepository.findAll());
 		return "editBook";
 	}
 }
