@@ -3,6 +3,7 @@ package training.BookStore.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,9 +27,10 @@ public class BookController {
 	@Autowired
 	private CategoryRepository catRepository;
 
-	@RequestMapping(value = { "/main" })
-	public String showMainPage() {
-		return "index";
+	// login page
+	@RequestMapping(value = "/login")
+	public String login() {
+		return "login";
 	}
 
 	// Show all books
@@ -40,6 +42,7 @@ public class BookController {
 	}
 
 	// Add a new book
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/addBook")
 	public String newBook(Model model) {
 		model.addAttribute("book", new Book());
@@ -59,12 +62,14 @@ public class BookController {
 	}
 
 	// Delete a book
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("delete/{id}")
 	public String deleteBook(@PathVariable("id") Long id, Model model) {
 		bookRepository.deleteById(id);
 		return "redirect:/bookList";
 	}
 
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("edit/{id}")
 	public String editBook(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("book", bookRepository.findById(id));
